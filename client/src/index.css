@@ -1,0 +1,229 @@
+/* Importing from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;600&display=swap");
+
+/* Importing Tailwind CSS */
+@import "tailwindcss";
+
+/* ---------- Colors ---------- */
+:root {
+  --primary-green: #25d366;
+  --secondary-white: #ffffff;
+  --hover-dark: #111b21;
+  --bg-cream: #fcf5eb;
+  --underline-green: #e6ffda;
+  
+  --text-dark: #111b21;
+  --text-white: #ffffff;
+  --text-light: #667781;
+  --border: #d1d1d1;
+  --divider: #e0e0e0;
+}
+
+/* ---------- Global Reset ---------- */
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+body {
+  background: var(--bg-cream);
+  color: var(--text-dark);
+  font-family: "Roboto", sans-serif;
+}
+
+/* ---------- Typography ---------- */
+h1, h2, h3, h4, h5, h6 {
+  /* font-weight: 600; */
+  font-family: "Montserrat", sans-serif;
+}
+
+p, li, a {
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+span {
+  /* color: var(--primary-green); */
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
+  line-height: 1.5;
+}
+
+a {
+  text-decoration: none;
+} 
+
+/* ---------- Buttons ---------- */
+button {
+  padding: 16px 28px;
+  border-radius: 50px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 16px;
+  text-align: center;
+  display: flex;
+  gap: 12px;
+}
+
+.btn-primary {
+  background-color: var(--primary-green);
+  color: var(--text-dark);
+  border: 1px solid var(--text-dark);
+}
+
+.btn-primary:hover {
+  background-color: var(--hover-dark);
+  color: var(--secondary-white);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-white);
+  color: var(--text-dark);
+  border: 1px solid var(--text-dark);
+}
+
+.btn-secondary:hover {
+  background-color: var(--hover-dark);
+  color: var(--secondary-white);
+}
+
+/* ---------- Input Fields ---------- */
+input, select, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--secondary-white);
+  color: var(--text-dark);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.15);
+}
+
+/* ---------- Cards / Panels ---------- */
+.wa-card {
+  background: var(--secondary-white);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--divider);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07);
+}
+
+/* ---------- Header ---------- */
+.wa-header {
+  background: transparent;
+  color: var(--text-dark);
+  padding: 16px 70px;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* ---------- Sidebar ---------- */
+.wa-sidebar {
+  width: 300px;
+  background: var(--secondary-white);
+  border-right: 1px solid var(--divider);
+  height: 100vh;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.wa-sidebar-item {
+  padding: 12px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.wa-sidebar-item:hover {
+  background: rgba(17, 27, 33, 0.06);
+}
+
+/* ---------- Chat Bubble Styles ---------- */
+.chat-container {
+  padding: 20px;
+  background: var(--bg-cream);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.chat-message {
+  max-width: 65%;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  position: relative;
+  line-height: 1.4;
+}
+
+.chat-incoming {
+  background: var(--secondary-white);
+  margin-right: auto;
+}
+
+.chat-outgoing {
+  background: var(--underline-green);
+  margin-left: auto;
+}
+
+.chat-time {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* ---------- List Styling ---------- */
+ul {
+  list-style: none;
+}
+
+li {
+  padding: 6px 0;
+}
+
+/* ---------- Navigation Styles ---------- */
+.nav-item {
+  position: relative;
+  padding-bottom: 4px;
+  text-decoration: none;
+  color: var(--text-dark);
+  transition: color 0.2s ease;
+}
+
+/* underline on hover */
+.nav-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0%;
+  background-color: #25d366;
+  transition: width 0.25s ease;
+}
+
+.nav-item:hover::after {
+  width: 100%;
+}
+
+/* active link */
+.nav-item.active {
+  color: var(--primary-green);
+}
+
+.nav-item.active::after {
+  width: 100%;
+  background-color: #25d366;
+}
