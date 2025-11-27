@@ -30,10 +30,10 @@ const Login = () => {
         setIsLoading(false);
         toast.success("Login successful");
         setTimeout(() => {
-          if (data.workspaces.length === 1) {
-            navigate(`/dashboard/workspace/${data.user.id}/home`);
+          if (data.workspaces.length > 1) {
+            navigate(`/dashboard/users/${data.user.id}/workspaces`);
           } else {
-            navigate(`/dashboard/workspaces`);
+            navigate(`/dashboard/workspace/${data.workspaces[0].id}/home`);
           }
         }, 1000);
         console.log(data);

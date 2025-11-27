@@ -11,6 +11,7 @@ import {
   FaUsers,
   FaRocket,
   FaShieldAlt,
+  FaPaperPlane,
 } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
 
@@ -28,6 +29,9 @@ import {
   FaAddressBook,
   FaUserTie,
 } from "react-icons/fa6";
+
+import { ImClipboard } from "react-icons/im";
+import { MdOutlineSupportAgent } from "react-icons/md";
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -257,5 +261,267 @@ export const sidebarMenu = [
     icon: <IoSettingsSharp size={22} />,
     title: "Settings",
     path: (id) => `/dashboard/workspace/${id}/settings`,
+  },
+];
+
+export const dashboardStats = [
+  {
+    index: 1,
+    color: "#1771E6",
+    icon: <FaPaperPlane size={24} />,
+    number: "10K+",
+    label: "Total Messages",
+  },
+  {
+    index: 2,
+    color: "#22D571",
+    icon: <ImClipboard size={24} />,
+    number: "500K+",
+    label: "Messages Sent",
+  },
+  {
+    index: 3,
+    color: "#E34F95",
+    icon: <MdOutlineSupportAgent size={24} />,
+    number: "12K+",
+    label: "Total Agents",
+  },
+];
+
+export const initialConversations = [
+  {
+    id: 1,
+    name: "Sarah Johnson",
+    lastMessage: "Thanks for the quick response!",
+    timestamp: "10:30 AM",
+    unread: 2,
+    avatar: "SJ",
+    status: "online",
+    phone: "+1 234 567 8900",
+    email: "sarah.j@example.com",
+    tags: ["VIP", "Support"],
+    agent: "John Doe",
+    notes: "Premium customer, needs priority support",
+    labels: ["Active", "Follow-up"],
+    messages: [
+      {
+        id: 1,
+        text: "Hi, I need help with my order",
+        sender: "contact",
+        time: "10:15 AM",
+        status: "read",
+      },
+      {
+        id: 2,
+        text: "Of course! I'd be happy to help. Can you provide your order number?",
+        sender: "agent",
+        time: "10:16 AM",
+        status: "read",
+      },
+      {
+        id: 3,
+        text: "It's #12345",
+        sender: "contact",
+        time: "10:18 AM",
+        status: "read",
+      },
+      {
+        id: 4,
+        text: "Let me check that for you right away.",
+        sender: "agent",
+        time: "10:20 AM",
+        status: "read",
+      },
+      {
+        id: 5,
+        text: "Thanks for the quick response!",
+        sender: "contact",
+        time: "10:30 AM",
+        status: "delivered",
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "Michael Chen",
+    lastMessage: "Can we schedule a call?",
+    timestamp: "9:45 AM",
+    unread: 0,
+    avatar: "MC",
+    status: "offline",
+    phone: "+1 234 567 8901",
+    email: "michael.c@example.com",
+    tags: ["Sales", "Enterprise"],
+    agent: "Jane Smith",
+    notes: "Interested in enterprise plan",
+    labels: ["Hot Lead"],
+    messages: [
+      {
+        id: 1,
+        text: "Hello, I'm interested in your enterprise package",
+        sender: "contact",
+        time: "9:30 AM",
+        status: "read",
+      },
+      {
+        id: 2,
+        text: "Great! I can help you with that. What's your team size?",
+        sender: "agent",
+        time: "9:32 AM",
+        status: "read",
+      },
+      {
+        id: 3,
+        text: "We have about 50 people",
+        sender: "contact",
+        time: "9:35 AM",
+        status: "read",
+      },
+      {
+        id: 4,
+        text: "Can we schedule a call?",
+        sender: "contact",
+        time: "9:45 AM",
+        status: "read",
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: "Emma Wilson",
+    lastMessage: "Perfect, thank you!",
+    timestamp: "Yesterday",
+    unread: 0,
+    avatar: "EW",
+    status: "offline",
+    phone: "+1 234 567 8902",
+    email: "emma.w@example.com",
+    tags: ["Support"],
+    agent: "John Doe",
+    notes: "Resolved billing issue",
+    labels: ["Resolved"],
+    messages: [
+      {
+        id: 1,
+        text: "I have a question about my billing",
+        sender: "contact",
+        time: "2:00 PM",
+        status: "read",
+      },
+      {
+        id: 2,
+        text: "I'm here to help! What's your question?",
+        sender: "agent",
+        time: "2:02 PM",
+        status: "read",
+      },
+      {
+        id: 3,
+        text: "Perfect, thank you!",
+        sender: "contact",
+        time: "2:15 PM",
+        status: "read",
+      },
+    ],
+  },
+];
+
+export const initialAgents = [
+  {
+    id: 1,
+    name: "John Doe",
+    email: "john.doe@company.com",
+    avatar: "JD",
+    status: "online",
+    activeChats: 5,
+    totalChats: 127,
+    avgResponseTime: "2m 15s",
+    satisfaction: 4.8,
+    lastActive: "Active now",
+    role: "Senior Agent",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    email: "jane.smith@company.com",
+    avatar: "JS",
+    status: "online",
+    activeChats: 3,
+    totalChats: 98,
+    avgResponseTime: "1m 45s",
+    satisfaction: 4.9,
+    lastActive: "Active now",
+    role: "Agent",
+  },
+  {
+    id: 3,
+    name: "Mike Johnson",
+    email: "mike.j@company.com",
+    avatar: "MJ",
+    status: "away",
+    activeChats: 1,
+    totalChats: 156,
+    avgResponseTime: "3m 10s",
+    satisfaction: 4.6,
+    lastActive: "10 minutes ago",
+    role: "Senior Agent",
+  },
+  {
+    id: 4,
+    name: "Sarah Williams",
+    email: "sarah.w@company.com",
+    avatar: "SW",
+    status: "offline",
+    activeChats: 0,
+    totalChats: 203,
+    avgResponseTime: "2m 30s",
+    satisfaction: 4.7,
+    lastActive: "2 hours ago",
+    role: "Team Lead",
+  },
+];
+
+export const tableHeaders = [
+  "Agent",
+  "Status",
+  "Active Chats",
+  "Total Chats",
+  "Avg. Response Time",
+  "Rating",
+  "Last Active",
+  "Actions",
+];
+
+export const sampleTemplates = [
+  {
+    id: "order_update_1",
+    name: "order_update_1",
+    category: "Utility",
+    status: "Approved",
+    language: "en_US",
+    lastUpdated: "2025-11-20",
+    type: "Transactional",
+    header: { type: "text", text: "Order {{1}}" },
+    body: "Hi {{1}}, your order {{2}} has been shipped. Track here {{3}}",
+    footer: "Thanks for ordering",
+    buttons: [
+      { type: "url", text: "Track", value: "https://track.example.com/123" },
+    ],
+  },
+  {
+    id: "promo_1",
+    name: "promo_1",
+    category: "Promotional",
+    status: "Pending",
+    language: "en_US",
+    lastUpdated: "2025-11-22",
+    type: "Marketing",
+    header: { type: "none" },
+    body: "Hello {{1}}! Enjoy 20% off with code {{2}}",
+    footer: "T&Cs apply",
+    buttons: [
+      { type: "quick_reply", text: "Claim" },
+      { type: "quick_reply", text: "Later" },
+    ],
   },
 ];

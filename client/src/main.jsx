@@ -1,14 +1,20 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Login from './components/Auth/Login.jsx'
-import ErrorPage from './utils/ErrorPage.jsx'
-import Register from './components/Auth/Register.jsx'
-import Loader from './utils/LoadingPage.jsx'
-import Home from './Dashboard/pages/Home.jsx'
-import DashboardLayout from './Layout/DashboardLayout.jsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App.jsx";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Login from "./components/Auth/Login.jsx";
+import ErrorPage from "./utils/ErrorPage.jsx";
+import Register from "./components/Auth/Register.jsx";
+import Loader from "./utils/LoadingPage.jsx";
+import Home from "./Dashboard/pages/Home.jsx";
+import DashboardLayout from "./Layout/DashboardLayout.jsx";
+import WorkspaceSelector from "./Dashboard/components/WorkspaceSelector.jsx";
+import LiveChat from "./Dashboard/pages/LiveChat.jsx";
+import Templates from "./Dashboard/pages/Templates.jsx";
+import Agents from "./Dashboard/pages/Agents.jsx";
+import TemplateForm from "./Dashboard/components/Templates/TemplateForm.jsx";
+import TemplatesList from "./Dashboard/components/Templates/TemplateList.jsx";
 
 const router = createBrowserRouter([
   {
@@ -36,51 +42,72 @@ const router = createBrowserRouter([
     element: <DashboardLayout />,
     children: [
       {
-        path: "/dashboard/workspace/:id/home",
+        path: "home",
         element: <Home />,
         hydrateFallbackElement: <Loader />,
       },
       {
-        path: "/dashboard/workspace/:id/live-chats",
-        element: <div>Live Chats</div>,
+        path: "live-chats",
+        element: <LiveChat />,
         hydrateFallbackElement: <Loader />,
       },
       {
-        path: "/dashboard/workspace/:id/templates",
-        element: <div>Templates</div>,
-        hydrateFallbackElement: <Loader />,
+        path: "templates",
+        element: <Templates />,
+        children: [
+          {
+            index: true,
+            element: <TemplatesList />,
+            hydrateFallbackElement: <Loader />,
+          },
+          {
+            path: "create",
+            element: <TemplateForm />,
+            hydrateFallbackElement: <Loader />,
+          },
+          {
+            path: "edit/:templateId",
+            element: <TemplateForm />,
+            hydrateFallbackElement: <Loader />,
+          },
+        ],
       },
       {
-        path: "/dashboard/workspace/:id/campaigns",
+        path: "campaigns",
         element: <div>Campaigns</div>,
         hydrateFallbackElement: <Loader />,
       },
       {
-        path: "/dashboard/workspace/:id/contacts",
+        path: "contacts",
         element: <div>Contacts</div>,
         hydrateFallbackElement: <Loader />,
       },
       {
-        path: "/dashboard/workspace/:id/Chatbots",
+        path: "chatbots",
         element: <div>Chatbots</div>,
         hydrateFallbackElement: <Loader />,
       },
       {
-        path: "/dashboard/workspace/:id/agents",
-        element: <div>Agents</div>,
+        path: "agents",
+        element: <Agents />,
         hydrateFallbackElement: <Loader />,
       },
       {
-        path: "/dashboard/workspace/:id/settings",
+        path: "settings",
         element: <div>Settings</div>,
         hydrateFallbackElement: <Loader />,
       },
-    ]
-  }
-])
+    ],
+  },
+  {
+    path: "/users/:id/workspaces",
+    element: <WorkspaceSelector />,
+    hydrateFallbackElement: <Loader />,
+  },
+]);
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-   <RouterProvider router={router} />
+    <RouterProvider router={router} />
   </StrictMode>
-)
+);
