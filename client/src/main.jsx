@@ -15,6 +15,13 @@ import Templates from "./Dashboard/pages/Templates.jsx";
 import Agents from "./Dashboard/pages/Agents.jsx";
 import TemplateForm from "./Dashboard/components/Templates/TemplateForm.jsx";
 import TemplatesList from "./Dashboard/components/Templates/TemplateList.jsx";
+import Campaigns from "./Dashboard/pages/Campaigns.jsx";
+import CampaignsList from "./Dashboard/components/Campaigns/CampaignsList.jsx";
+import CreateCampaignWizard from "./Dashboard/components/Campaigns/CreateCampaignWizard.jsx";
+import Contacts from "./Dashboard/pages/Contacts.jsx";
+import ContactsList from "./Dashboard/components/Contacts/ContactList.jsx";
+import CreateContact from "./Dashboard/components/Contacts/CreateContact.jsx";
+import ContactProfile from "./Dashboard/components/Contacts/ContactProfile.jsx";
 
 const router = createBrowserRouter([
   {
@@ -74,12 +81,41 @@ const router = createBrowserRouter([
       },
       {
         path: "campaigns",
-        element: <div>Campaigns</div>,
+        element: <Campaigns />,
+        children: [
+          {
+            index: true,
+            element: <CampaignsList />,
+            hydrateFallbackElement: <Loader />,
+          },
+          {
+            path: "create",
+            element: <CreateCampaignWizard />,
+            hydrateFallbackElement: <Loader />,
+          }
+        ],
         hydrateFallbackElement: <Loader />,
       },
       {
         path: "contacts",
-        element: <div>Contacts</div>,
+        element: <Contacts />,
+        children: [
+          {
+            index: true,
+            element: <ContactsList />,
+            hydrateFallbackElement: <Loader />,
+          },
+          {
+            path: "create",
+            element: <CreateContact />,
+            hydrateFallbackElement: <Loader />,
+          },
+          {
+            path: ":contactId",
+            element: <ContactProfile />,
+            hydrateFallbackElement: <Loader />,
+          }
+        ],
         hydrateFallbackElement: <Loader />,
       },
       {
