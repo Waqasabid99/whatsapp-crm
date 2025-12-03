@@ -2,7 +2,8 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet"
-import authRouter from "./routes/users.routes.js";
+import authRouter from "./routes/auth.routes.js";
+import WhatsappRouter from "./routes/whatsapp.routes.js";
 const app = express();
 const port = process.env.ENVIRONMENT === "production" ? process.env.PORT : 5000;
 
@@ -29,7 +30,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 app.use("/users/auth", authRouter);
-
+app.use("/api", WhatsappRouter)
 app.listen(port, () => {
   console.log(`App listening on port http://localhost:${port}`);
 });

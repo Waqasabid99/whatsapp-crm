@@ -1,15 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../home/Navbar";
-import { backendUrl, plans } from "../../utils/constants";
+import { plans } from "../../utils/constants";
 import { useState } from "react";
-import axios from "axios";
 import { FaLongArrowAltRight } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import useAuthContext from "../../context/useAuthContext";
 
 const Register = () => {
+  const { register, loading: isLoading } = useAuthContext();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -27,27 +27,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    try {
-      const { data } = await axios.post(`${backendUrl}/register`, formData, {
-        withCredentials: true,
-      });
-      if (data.success === true) {
-        toast.success("User created successfully");
-        setIsLoading(false);
-        setTimeout(() => {
-          navigate(`/dashboard/workspace/${data.user.id}/home`);
-        }, 1000);
-      } else {
-        toast.error(data.message);
-        setIsLoading(false);
-      }
-      console.log(data);
-    } catch (error) {
-      toast.error(error.message);
-      setIsLoading(false);
-      console.error(error);
-    }
+    await register(formData, navigate);
   };
 
   return (

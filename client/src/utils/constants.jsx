@@ -247,11 +247,11 @@ export const sidebarMenu = [
     title: "Contacts",
     path: (id) => `/dashboard/workspace/${id}/contacts`,
   },
-  {
-    icon: <FaRobot size={22} />,
-    title: "Chatbots",
-    path: (id) => `/dashboard/workspace/${id}/chatbots`,
-  },
+  // {
+  //   icon: <FaRobot size={22} />,
+  //   title: "Chatbots",
+  //   path: (id) => `/dashboard/workspace/${id}/chatbots`,
+  // },
   {
     icon: <FaUserTie size={22} />,
     title: "Agents",

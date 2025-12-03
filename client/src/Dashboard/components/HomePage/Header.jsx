@@ -1,17 +1,68 @@
-import { dashboardStats } from "../../../utils/constants";
+import { useState } from "react";
+import { backendUrl, dashboardStats } from "../../../utils/constants";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
+const Header = ({ success, error, wabaId }) => {
+  const { id: adminId } = useParams();
+  const [isAPIConnected, setIsAPIConnected] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-const Header = () => {
+  console.log({ success, error });
+  useEffect(() => {
+    if (success) {
+      setIsAPIConnected(true);
+    } else if (error) {
+      setIsAPIConnected(false);
+    }
+  }, [success, error]);
+
+  const handleConnectAPI = async () => {
+    // Logic to connect API
+    setLoading(true);
+    try {
+      const { data } = await axios.get(
+        `${backendUrl}/api/whatsapp/connect/${adminId}`,
+        { withCredentials: true }
+      );
+      console.log(data);
+      if (data.success === true) {
+        setLoading(false);
+        window.open(data.url, "_blank");
+      } else {
+        setLoading(false);
+        alert("Failed to connect API. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error connecting API:", error);
+      setLoading(false);
+      alert("An error occurred. Please try again.");
+    }
+  };
   return (
     <section className="w-full mb-5">
       <div className="w-full bg-linear-to-r from-[#3AB8BD] to-[#2A96D1] px-9 py-5 rounded-md flex items-center justify-between my-4">
         <h1 className="text-3xl text-white">Hello, Admin</h1>
-
-        <button
-          type="button"
-          className="bg-white hover:bg-black hover:text-white hover:scale-105 duration-300 active:scale-95 px-6 py-3 rounded-lg"
-        >
-          Connect API
-        </button>
+        {isAPIConnected ? (
+          <button
+            type="button"
+            className="bg-white text-green-600 font-semibold px-6 py-3 rounded-lg cursor-not-allowed"
+            disabled
+          >
+            API Connected
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="bg-white hover:bg-black hover:text-white hover:scale-105 duration-300 active:scale-95 px-6 py-3 rounded-lg"
+            onClick={handleConnectAPI}
+            disabled={loading}
+          >
+            {loading && !isAPIConnected ? "Connecting..." : "Connect API"}
+          </button>
+        )}
       </div>
 
       <div className="cards grid grid-cols-1 md:grid-cols-3 gap-4">

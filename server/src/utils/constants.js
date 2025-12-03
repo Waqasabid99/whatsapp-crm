@@ -31,5 +31,38 @@ const safeUser = (user) => ({
   name: user.name,
 });
 
+// ==========================================
+// Helper: Increment Usage
+// ==========================================
+const incrementUsage = async (workspaceId, featureKey) => {
+  try {
+    const now = new Date();
+    const periodStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const periodEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-export { hashPassword, verifyPassword, generateToken, verifyToken, generateRefreshToken, safeUser }
+    await prisma.usage.upsert({
+      where: {
+        workspaceId_key_periodStart: {
+          workspaceId: workspaceId,
+          key: featureKey,
+          periodStart: periodStart,
+        },
+      },
+      update: {
+        count: { increment: 1 },
+      },
+      create: {
+        workspaceId: workspaceId,
+        key: featureKey,
+        periodStart: periodStart,
+        periodEnd: periodEnd,
+        count: 1,
+      },
+    });
+  } catch (error) {
+    console.error("Error incrementing usage:", error);
+  }
+};
+
+
+export { hashPassword, verifyPassword, generateToken, verifyToken, generateRefreshToken, safeUser, incrementUsage }

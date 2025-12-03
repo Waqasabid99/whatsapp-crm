@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../home/Navbar";
-import { toast, ToastContainer } from "react-toastify";
-import axios from "axios";
-import { backendUrl } from "../../utils/constants";
+import { ToastContainer } from "react-toastify";
+import useAuthContext from "../../context/useAuthContext";
 
 const Login = () => {
+  const { login, loading: isLoading } = useAuthContext();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -21,31 +20,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    try {
-      const { data } = await axios.post(`${backendUrl}/login`, formData, {
-        withCredentials: true,
-      });
-      if (data.success === true) {
-        setIsLoading(false);
-        toast.success("Login successful");
-        setTimeout(() => {
-          if (data.workspaces.length > 1) {
-            navigate(`/dashboard/users/${data.user.id}/workspaces`);
-          } else {
-            navigate(`/dashboard/workspace/${data.workspaces[0].id}/home`);
-          }
-        }, 1000);
-        console.log(data);
-      } else {
-        setIsLoading(false);
-        toast.error(data.message);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      toast.error(error.response.data.message);
-      console.error(error);
-    }
+    await login(formData, navigate);
   };
   return (
     <>

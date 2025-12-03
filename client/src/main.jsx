@@ -22,6 +22,7 @@ import Contacts from "./Dashboard/pages/Contacts.jsx";
 import ContactsList from "./Dashboard/components/Contacts/ContactList.jsx";
 import CreateContact from "./Dashboard/components/Contacts/CreateContact.jsx";
 import ContactProfile from "./Dashboard/components/Contacts/ContactProfile.jsx";
+import Settings from "./Dashboard/pages/Settings.jsx";
 
 const router = createBrowserRouter([
   {
@@ -130,7 +131,7 @@ const router = createBrowserRouter([
       },
       {
         path: "settings",
-        element: <div>Settings</div>,
+        element: <Settings />,
         hydrateFallbackElement: <Loader />,
       },
     ],
