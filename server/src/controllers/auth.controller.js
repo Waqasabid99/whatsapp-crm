@@ -110,7 +110,7 @@ const createUser = async (req, res) => {
         httpOnly: true,
         secure: false,
       })
-      .json({ success: true, message: "User created successfully", user });
+      .json({ success: true, message: "User created successfully", user, workspace, subscription, plan });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
     console.log("Something went wrong", error);
@@ -253,4 +253,120 @@ const refreshAccessToken = async (req, res) => {
     .json({ accessToken: newAccessToken });
 };
 
-export { createUser, refreshAccessToken, loginUser };
+const authCheck = async (req, res) => {
+  try {
+    const { accessToken, refreshToken } = req.cookies;
+
+    // No tokens → not authenticated
+    if (!accessToken && !refreshToken) {
+      return res.json({ success: false });
+    }
+
+    // 1. Try verifying accessToken first
+    try {
+      const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
+
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.userId },
+        select: { id: true, name: true, email: true },
+      });
+
+      const memberships = await prisma.membership.findMany({
+        where: { userId: user.id },
+        include: { workspace: true },
+      });
+
+      const workspaces = memberships.map(m => ({
+        id: m.workspace.id,
+        name: m.workspace.name,
+        slug: m.workspace.slug,
+        role: m.role
+      }));
+
+      return res.json({
+        success: true,
+        user,
+        workspaces,
+      });
+
+    } catch (accessError) {
+
+      // Access token expired → try refreshToken
+    }
+
+    // 2. Check refreshToken if access token expired
+    const storedToken = await prisma.refreshToken.findUnique({
+      where: { token: refreshToken },
+    });
+
+    if (!storedToken || storedToken.expiresAt < new Date()) {
+      return res.json({ success: false });
+    }
+
+    // Generate a new access token
+    const newAccessToken = generateToken({ userId: storedToken.userId });
+
+    res.cookie("accessToken", newAccessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
+
+    // Fetch user again
+    const user = await prisma.user.findUnique({
+      where: { id: storedToken.userId },
+      select: { id: true, name: true, email: true },
+    });
+
+    const memberships = await prisma.membership.findMany({
+      where: { userId: user.id },
+      include: { workspace: true },
+    });
+
+    const workspaces = memberships.map(m => ({
+      id: m.workspace.id,
+      name: m.workspace.name,
+      slug: m.workspace.slug,
+      role: m.role
+    }));
+
+    return res.status(200).json({ success: true, user, workspaces });
+
+  } catch (err) {
+    return res.status(500).json({ success: false });
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    const { refreshToken } = req.cookies;
+    if (!refreshToken)
+      return res.status(401).json({ message: "No refresh token provided" });
+
+    const tokenRecord = await prisma.refreshToken.findUnique({
+      where: { token: refreshToken },
+    });
+    if (
+      !tokenRecord ||
+      tokenRecord.expiresAt < new Date() ||
+      tokenRecord.revoked
+    ) {
+      return res.status(401).json({ message: "Invalid refresh token" });
+    }
+
+    await prisma.refreshToken.update({
+      where: { token: refreshToken },
+      data: { revoked: true },
+    });
+
+    res
+      .clearCookie("accessToken")
+      .clearCookie("refreshToken")
+      .json({ message: "Logout successful" });
+  } catch (error) {
+    console.error("Logout error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export { createUser, refreshAccessToken, loginUser, authCheck, logout };

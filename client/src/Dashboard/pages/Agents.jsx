@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { MoreVertical, MessageSquare, Clock, Edit2 } from 'lucide-react';
-import { initialAgents, tableHeaders } from '../../utils/constants';
-
+import { backendUrl, initialAgents, tableHeaders } from '../../utils/constants';
+import axios from 'axios';
 const Agents = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -20,6 +20,14 @@ const Agents = () => {
         return 'bg-gray-400';
     }
   };
+
+  const getStaff = async () => {
+    const { data } = await axios.get(`${backendUrl}/staff/all-staff`, { withCredentials: true });
+    console.log(data)
+    return data;
+  }
+
+  getStaff();
 
   const getStatusBadge = (status) => {
     const colors = {

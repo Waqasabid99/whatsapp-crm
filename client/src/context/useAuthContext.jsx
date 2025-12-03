@@ -9,6 +9,7 @@ const useAuthContext = create(
     persist(
       (set, get) => ({
         user: null,
+        workspaces: [],
         isAuthenticated: false,
         loading: false,
         error: null,
@@ -27,16 +28,16 @@ const useAuthContext = create(
               set({
                 loading: false,
                 user: data.user,
+                workspaces: data.workspace,
+                subscription: data.subscription,
+                plan: data.plan,
                 isAuthenticated: true,
                 error: null,
               });
 
               toast.success("Registration successful.");
-              navigate(`/dashboard/workspace/${data.user.id}/home`);
-            } else {
-              set({ loading: false, error: data.message });
-              toast.error(data.message);
-            }
+              navigate(`/dashboard/workspace/${data.workspace.id}/home`);
+            } 
           } catch (err) {
             set({ loading: false, error: "Registration failed." });
             toast.error("Registration failed. Please try again.");
@@ -57,6 +58,7 @@ const useAuthContext = create(
               set({
                 loading: false,
                 user: data.user,
+                workspaces: data.workspaces,
                 isAuthenticated: true,
                 error: null,
               });
@@ -67,7 +69,9 @@ const useAuthContext = create(
                 if (data.workspaces.length > 1) {
                   navigate(`/dashboard/users/${data.user.id}/workspaces`);
                 } else {
-                  navigate(`/dashboard/workspace/${data.workspaces[0].id}/home`);
+                  navigate(
+                    `/dashboard/workspace/${data.workspaces[0].id}/home`
+                  );
                 }
               }, 800);
             } else {
@@ -82,12 +86,31 @@ const useAuthContext = create(
             toast.error("Login failed. Please check your credentials.");
           }
         },
+
+        logout: async (navigate) => {
+          await axios.post(
+            `${backendUrl}/users/auth/logout`,
+            {},
+            { withCredentials: true }
+          );
+
+          set({
+            user: null,
+            workspaces: [],
+            isAuthenticated: false,
+          });
+
+          if (navigate) navigate("/login");
+        },
       }),
 
       {
         name: "agency-storage",
+
+       // Didn't persisted auth data
         partialize: (state) => ({
           user: state.user,
+          workspaces: state.workspaces,
           isAuthenticated: state.isAuthenticated,
         }),
       }

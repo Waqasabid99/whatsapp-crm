@@ -23,6 +23,7 @@ import ContactsList from "./Dashboard/components/Contacts/ContactList.jsx";
 import CreateContact from "./Dashboard/components/Contacts/CreateContact.jsx";
 import ContactProfile from "./Dashboard/components/Contacts/ContactProfile.jsx";
 import Settings from "./Dashboard/pages/Settings.jsx";
+import ProtectedRoute from "./utils/ProtectedRoutes.jsx";
 
 const router = createBrowserRouter([
   {
@@ -46,100 +47,105 @@ const router = createBrowserRouter([
     hydrateFallbackElement: <Loader />,
   },
   {
-    path: "/dashboard/workspace/:id",
-    element: <DashboardLayout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        path: "home",
-        element: <Home />,
-        hydrateFallbackElement: <Loader />,
-      },
-      {
-        path: "live-chats",
-        element: <LiveChat />,
-        hydrateFallbackElement: <Loader />,
-      },
-      {
-        path: "templates",
-        element: <Templates />,
+        path: "/dashboard/workspace/:id",
+        element: <DashboardLayout />,
         children: [
           {
-            index: true,
-            element: <TemplatesList />,
+            path: "home",
+            element: <Home />,
             hydrateFallbackElement: <Loader />,
           },
           {
-            path: "create",
-            element: <TemplateForm />,
+            path: "live-chats",
+            element: <LiveChat />,
             hydrateFallbackElement: <Loader />,
           },
           {
-            path: "edit/:templateId",
-            element: <TemplateForm />,
+            path: "templates",
+            element: <Templates />,
+            children: [
+              {
+                index: true,
+                element: <TemplatesList />,
+                hydrateFallbackElement: <Loader />,
+              },
+              {
+                path: "create",
+                element: <TemplateForm />,
+                hydrateFallbackElement: <Loader />,
+              },
+              {
+                path: "edit/:templateId",
+                element: <TemplateForm />,
+                hydrateFallbackElement: <Loader />,
+              },
+            ],
+          },
+          {
+            path: "campaigns",
+            element: <Campaigns />,
+            children: [
+              {
+                index: true,
+                element: <CampaignsList />,
+                hydrateFallbackElement: <Loader />,
+              },
+              {
+                path: "create",
+                element: <CreateCampaignWizard />,
+                hydrateFallbackElement: <Loader />,
+              }
+            ],
+            hydrateFallbackElement: <Loader />,
+          },
+          {
+            path: "contacts",
+            element: <Contacts />,
+            children: [
+              {
+                index: true,
+                element: <ContactsList />,
+                hydrateFallbackElement: <Loader />,
+              },
+              {
+                path: "create",
+                element: <CreateContact />,
+                hydrateFallbackElement: <Loader />,
+              },
+              {
+                path: ":contactId",
+                element: <ContactProfile />,
+                hydrateFallbackElement: <Loader />,
+              }
+            ],
+            hydrateFallbackElement: <Loader />,
+          },
+          {
+            path: "chatbots",
+            element: <div>Chatbots</div>,
+            hydrateFallbackElement: <Loader />,
+          },
+          {
+            path: "agents",
+            element: <Agents />,
+            hydrateFallbackElement: <Loader />,
+          },
+          {
+            path: "settings",
+            element: <Settings />,
             hydrateFallbackElement: <Loader />,
           },
         ],
       },
       {
-        path: "campaigns",
-        element: <Campaigns />,
-        children: [
-          {
-            index: true,
-            element: <CampaignsList />,
-            hydrateFallbackElement: <Loader />,
-          },
-          {
-            path: "create",
-            element: <CreateCampaignWizard />,
-            hydrateFallbackElement: <Loader />,
-          }
-        ],
+        path: "/users/:id/workspaces",
+        element: <WorkspaceSelector />,
         hydrateFallbackElement: <Loader />,
       },
-      {
-        path: "contacts",
-        element: <Contacts />,
-        children: [
-          {
-            index: true,
-            element: <ContactsList />,
-            hydrateFallbackElement: <Loader />,
-          },
-          {
-            path: "create",
-            element: <CreateContact />,
-            hydrateFallbackElement: <Loader />,
-          },
-          {
-            path: ":contactId",
-            element: <ContactProfile />,
-            hydrateFallbackElement: <Loader />,
-          }
-        ],
-        hydrateFallbackElement: <Loader />,
-      },
-      {
-        path: "chatbots",
-        element: <div>Chatbots</div>,
-        hydrateFallbackElement: <Loader />,
-      },
-      {
-        path: "agents",
-        element: <Agents />,
-        hydrateFallbackElement: <Loader />,
-      },
-      {
-        path: "settings",
-        element: <Settings />,
-        hydrateFallbackElement: <Loader />,
-      },
-    ],
-  },
-  {
-    path: "/users/:id/workspaces",
-    element: <WorkspaceSelector />,
-    hydrateFallbackElement: <Loader />,
+    ]
   },
 ]);
 

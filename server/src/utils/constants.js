@@ -1,6 +1,7 @@
 import "dotenv/config"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import {prisma} from "../db.js"
 
 const saltRounds = process.env.ENVIRONMENT === "production" ? process.env.SALT_ROUNDS : 10
 const secret = process.env.ENVIRONMENT === "production" ? process.env.JWT_SECRET : "secretforproject"
@@ -31,9 +32,7 @@ const safeUser = (user) => ({
   name: user.name,
 });
 
-// ==========================================
 // Helper: Increment Usage
-// ==========================================
 const incrementUsage = async (workspaceId, featureKey) => {
   try {
     const now = new Date();
