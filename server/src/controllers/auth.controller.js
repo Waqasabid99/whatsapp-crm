@@ -90,8 +90,8 @@ const createUser = async (req, res) => {
     });
 
     // Generate tokens
-    const accessToken = generateToken({ userId: user.id });
-    const refreshTokenValue = generateRefreshToken({ userId: user.id });
+    const accessToken = generateToken({ userId: user.id, role: "OWNER" });
+    const refreshTokenValue = generateRefreshToken({ userId: user.id, role: "OWNER" });
 
     // Store refresh token in DB
     await prisma.refreshToken.create({
@@ -176,8 +176,8 @@ const loginUser = async (req, res) => {
     }));
 
     // 5. Generate auth tokens
-    const accessToken = generateToken({ userId: user.id });
-    const refreshTokenValue = generateRefreshToken({ userId: user.id });
+    const accessToken = generateToken({ userId: user.id, workspaceId: workspaces[0].id });
+    const refreshTokenValue = generateRefreshToken({ userId: user.id, workspaceId: workspaces[0].id });
 
     // 6. Store refresh token in DB
     await prisma.refreshToken.create({

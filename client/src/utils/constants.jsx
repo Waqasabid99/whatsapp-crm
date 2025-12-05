@@ -486,9 +486,6 @@ export const tableHeaders = [
   "Status",
   "Active Chats",
   "Total Chats",
-  "Avg. Response Time",
-  "Rating",
-  "Last Active",
   "Actions",
 ];
 

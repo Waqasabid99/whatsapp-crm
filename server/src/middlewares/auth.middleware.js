@@ -4,6 +4,7 @@ import { prisma } from "../db.js";
 const verifyUser = async (req, res, next) => {
   try {
     const token = req.headers?.authorization?.split(" ")[1] || req.cookies?.accessToken;
+    const workspaceId = req.params.workspaceId;
     if (!token) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
@@ -19,12 +20,24 @@ const verifyUser = async (req, res, next) => {
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId }
     });
+    
+    const role = await prisma.membership.findUnique({
+      where: { userId_workspaceId: { userId: user.id, workspaceId: decoded.workspaceId } }, select: { role: true }
+    });
+    if (!role) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+    // req.role = role.role
 
     if (!user) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
-    req.user = user;
+    req.user = {
+      user: user,
+      workspaceId: decoded.workspaceId,
+      role: role.role.toLowerCase(),
+    }
     next();
 
   } catch (error) {
