@@ -1,23 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { backendUrl, dashboardStats } from "../../../utils/constants";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
-import { toast, ToastContainer } from "react-toastify";
-const Header = ({ success, error, wabaId }) => {
-  const { id: adminId } = useParams();
-  const [isAPIConnected, setIsAPIConnected] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+import { useParams } from "react-router-dom";
+import useAuthContext from "../../../context/useAuthContext";
 
-  console.log({ success, error });
+const Header = ({ success, error, wabaId, apiKey }) => {
+  const { id: adminId } = useParams();
+  const [loading, setLoading] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const { user } = useAuthContext();
+  console.log(user)
+  console.log({ success, error, wabaId, apiKey });
+
   useEffect(() => {
-    if (success) {
-      setIsAPIConnected(true);
-    } else if (error) {
-      setIsAPIConnected(false);
+    if (user?.apiKeys?.length > 0 && user?.apiKeys[0].isActive) {
+      setIsConnected(true);
     }
-  }, [success, error]);
+
+  }, [user])
 
   const handleConnectAPI = async () => {
     // Logic to connect API
@@ -45,7 +45,7 @@ const Header = ({ success, error, wabaId }) => {
     <section className="w-full mb-5">
       <div className="w-full bg-linear-to-r from-[#3AB8BD] to-[#2A96D1] px-9 py-5 rounded-md flex items-center justify-between my-4">
         <h1 className="text-3xl text-white">Hello, Admin</h1>
-        {isAPIConnected ? (
+        {isConnected ? (
           <button
             type="button"
             className="bg-white text-green-600 font-semibold px-6 py-3 rounded-lg cursor-not-allowed"
@@ -60,7 +60,7 @@ const Header = ({ success, error, wabaId }) => {
             onClick={handleConnectAPI}
             disabled={loading}
           >
-            {loading && !isAPIConnected ? "Connecting..." : "Connect API"}
+            {loading && !isConnected ? "Connecting..." : "Connect API"}
           </button>
         )}
       </div>

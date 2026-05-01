@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import { FaUser } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
+import useAuthContext from "../../context/useAuthContext";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuthContext();
 
+  console.log(user, isAuthenticated)
   const isDesktop = useMediaQuery({ query: "(min-width: 1024px)" });
 
   const handleDropdown = () => {
@@ -33,17 +36,17 @@ const Navbar = () => {
   return (
     <header className={` ${isDesktop ? "flex justify-between items-center bg-white p-5" : "flex justify-between items-center px-2 py-4 bg-white"}`}>
       {!isDesktop && (
-      <div className="invisible"></div>
+        <div className="invisible"></div>
       )}
       <h1 className="text-md md:text-4xl">Dashboard</h1>
       {/* Profile */}
       <div className="relative" ref={dropdownRef}>
-        <span
+        <h3
           onClick={handleDropdown}
-          className="bg-[#25d366] text-white p-3 rounded-full cursor-pointer select-none"
+          className="bg-[#25d366] text-white font-bold px-5 py-3 rounded-full cursor-pointer select-none"
         >
-          W
-        </span>
+          {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+        </h3>
 
         {/* Animated Dropdown */}
         <div

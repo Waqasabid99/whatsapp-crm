@@ -39,6 +39,7 @@ const useAuthContext = create(
               navigate(`/dashboard/workspace/${data.workspace.id}/home`);
             } 
           } catch (err) {
+            console.log(err)
             set({ loading: false, error: "Registration failed." });
             toast.error("Registration failed. Please try again.");
           }
@@ -53,7 +54,7 @@ const useAuthContext = create(
               formData,
               { withCredentials: true }
             );
-
+            console.log(data)
             if (data.success) {
               set({
                 loading: false,
@@ -84,6 +85,7 @@ const useAuthContext = create(
               error: "Login failed. Please check your credentials.",
             });
             toast.error("Login failed. Please check your credentials.");
+            console.log(err);
           }
         },
 

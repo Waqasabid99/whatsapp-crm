@@ -309,7 +309,7 @@ const deleteStaff = async (req, res) => {
       include: { user: true },
     });
 
-     // Check if user has any other workspace memberships
+    // Check if user has any other workspace memberships
     const remainingMemberships = await prisma.membership.count({
       where: { userId: staffId },
     });
@@ -319,7 +319,7 @@ const deleteStaff = async (req, res) => {
         where: { id: staffId },
       });
     }
-    
+
     return res.status(200).json({
       success: true,
       message: "Staff deleted successfully.",

@@ -1,4 +1,4 @@
-import { initialAgents, tableHeaders } from "../../../utils/constants";
+import { tableHeaders, initialAgents } from "../../../utils/constants";
 import { MoreVertical, MessageSquare, Clock, Edit2 } from "lucide-react";
 
 const AgentsTable = () => {

@@ -1,4 +1,6 @@
 import { prisma } from "../db.js";
+import jwt from "jsonwebtoken";
+
 import {
   generateRefreshToken,
   generateToken,
@@ -71,7 +73,7 @@ const createUser = async (req, res) => {
         status: "ACTIVE",
         currentPeriodStart: now,
         currentPeriodEnd: new Date(
-          now.setMonth(now.getMonth() + 1) // assuming monthly billing
+          new Date(now).setMonth(now.getMonth() + 1) // assuming monthly billing
         ),
       },
     });
@@ -122,7 +124,13 @@ const loginUser = async (req, res) => {
 
   try {
     // 1. Check if user exists
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({
+      where: { email },
+      include: {
+        apiKeys: true,
+        memberships: true,
+      },
+    });
     if (!user)
       return res
         .status(404)
@@ -138,16 +146,19 @@ const loginUser = async (req, res) => {
     // 3. Delete old refresh tokens (optional security enhancement)
     await prisma.refreshToken.deleteMany({ where: { userId: user.id } });
 
-    // 4. Fetch user workspaces + subscription + plan
+    // 4. Fetch user workspaces + subscriptions + plan
+    // Schema: Workspace has `subscriptions` (plural, one-to-many relation)
     const memberships = await prisma.membership.findMany({
       where: { userId: user.id },
       include: {
         workspace: {
           include: {
-            plans: {
-              // ← use "plans" instead of "subscription"
+            subscriptions: {
+              where: { status: "ACTIVE" },
+              orderBy: { createdAt: "desc" },
+              take: 1,
               include: {
-                plan: true, // include the plan details for each subscription
+                plan: true,
               },
             },
           },
@@ -156,28 +167,32 @@ const loginUser = async (req, res) => {
     });
 
     // Format workspace data
-    const workspaces = memberships.map((m) => ({
-      id: m.workspace.id,
-      name: m.workspace.name,
-      slug: m.workspace.slug,
-      role: m.role,
-      subscription: m.workspace.subscription
-        ? {
-            status: m.workspace.subscription.status,
-            renewsAt: m.workspace.subscription.renewsAt,
-            plan: {
-              name: m.workspace.subscription.plan.name,
-              slug: m.workspace.subscription.plan.slug,
-              priceCents: m.workspace.subscription.plan.priceCents,
-              billingInterval: m.workspace.subscription.plan.billingInterval,
-            },
-          }
-        : null,
-    }));
+    // Pick the most recent active subscription (first in sorted list)
+    const workspaces = memberships.map((m) => {
+      const activeSubscription = m.workspace.subscriptions[0] ?? null;
+      return {
+        id: m.workspace.id,
+        name: m.workspace.name,
+        slug: m.workspace.slug,
+        role: m.role,
+        subscription: activeSubscription
+          ? {
+              status: activeSubscription.status,
+              currentPeriodEnd: activeSubscription.currentPeriodEnd,
+              plan: {
+                name: activeSubscription.plan.name,
+                slug: activeSubscription.plan.slug,
+                priceCents: activeSubscription.plan.priceCents,
+                billingInterval: activeSubscription.plan.billingInterval,
+              },
+            }
+          : null,
+      };
+    });
 
     // 5. Generate auth tokens
-    const accessToken = generateToken({ userId: user.id, workspaceId: workspaces[0].id });
-    const refreshTokenValue = generateRefreshToken({ userId: user.id, workspaceId: workspaces[0].id });
+    const accessToken = generateToken({ userId: user.id, workspaceId: workspaces[0]?.id });
+    const refreshTokenValue = generateRefreshToken({ userId: user.id, workspaceId: workspaces[0]?.id });
 
     // 6. Store refresh token in DB
     await prisma.refreshToken.create({
@@ -276,11 +291,11 @@ const authCheck = async (req, res) => {
         include: { workspace: true },
       });
 
-      const workspaces = memberships.map(m => ({
+      const workspaces = memberships.map((m) => ({
         id: m.workspace.id,
         name: m.workspace.name,
         slug: m.workspace.slug,
-        role: m.role
+        role: m.role,
       }));
 
       return res.json({
@@ -288,10 +303,8 @@ const authCheck = async (req, res) => {
         user,
         workspaces,
       });
-
     } catch (accessError) {
-
-      // Access token expired → try refreshToken
+      // Access token expired or invalid → fall through to refresh token check
     }
 
     // 2. Check refreshToken if access token expired
@@ -299,7 +312,7 @@ const authCheck = async (req, res) => {
       where: { token: refreshToken },
     });
 
-    if (!storedToken || storedToken.expiresAt < new Date()) {
+    if (!storedToken || storedToken.expiresAt < new Date() || storedToken.revoked) {
       return res.json({ success: false });
     }
 
@@ -323,15 +336,14 @@ const authCheck = async (req, res) => {
       include: { workspace: true },
     });
 
-    const workspaces = memberships.map(m => ({
+    const workspaces = memberships.map((m) => ({
       id: m.workspace.id,
       name: m.workspace.name,
       slug: m.workspace.slug,
-      role: m.role
+      role: m.role,
     }));
 
     return res.status(200).json({ success: true, user, workspaces });
-
   } catch (err) {
     return res.status(500).json({ success: false });
   }

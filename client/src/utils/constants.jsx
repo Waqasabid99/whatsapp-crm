@@ -288,6 +288,12 @@ export const dashboardStats = [
   },
 ];
 
+export const ChangeDateFormat = (dateString) => {
+  const options = { hour: '2-digit', minute: '2-digit' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString([], options);
+}
+
 export const initialConversations = [
   {
     id: 1,
@@ -489,40 +495,6 @@ export const tableHeaders = [
   "Actions",
 ];
 
-export const sampleTemplates = [
-  {
-    id: "order_update_1",
-    name: "order_update_1",
-    category: "Utility",
-    status: "Approved",
-    language: "en_US",
-    lastUpdated: "2025-11-20",
-    type: "Transactional",
-    header: { type: "text", text: "Order {{1}}" },
-    body: "Hi {{1}}, your order {{2}} has been shipped. Track here {{3}}",
-    footer: "Thanks for ordering",
-    buttons: [
-      { type: "url", text: "Track", value: "https://track.example.com/123" },
-    ],
-  },
-  {
-    id: "promo_1",
-    name: "promo_1",
-    category: "Promotional",
-    status: "Pending",
-    language: "en_US",
-    lastUpdated: "2025-11-22",
-    type: "Marketing",
-    header: { type: "none" },
-    body: "Hello {{1}}! Enjoy 20% off with code {{2}}",
-    footer: "T&Cs apply",
-    buttons: [
-      { type: "quick_reply", text: "Claim" },
-      { type: "quick_reply", text: "Later" },
-    ],
-  },
-];
-
 export const sampleCampaigns = [
   {
     id: "camp_001",
@@ -589,4 +561,15 @@ export const sampleCampaigns = [
     failed: 28,
     createdAt: "2025-11-18 03:20 PM",
   },
+];
+
+export const availableTags = [
+  "VIP",
+  "Lead",
+  "Customer",
+  "Active",
+  "Newsletter",
+  "Premium",
+  "Trial",
+  "Enterprise",
 ];

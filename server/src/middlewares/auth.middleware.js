@@ -20,7 +20,7 @@ const verifyUser = async (req, res, next) => {
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId }
     });
-    
+
     const role = await prisma.membership.findUnique({
       where: { userId_workspaceId: { userId: user.id, workspaceId: decoded.workspaceId } }, select: { role: true }
     });

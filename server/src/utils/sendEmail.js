@@ -1,7 +1,8 @@
+import "dotenv/config.js";
 import { Resend } from "resend";
-import { staffInviteHtml } from "./emailTemplate.js"; 
+import { staffInviteHtml } from "./emailTemplate.js";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || "re_6ivmWtZm_7yixbdDkzv8PsCPfLCujPPaM");
 
 /**
  * Send staff invite email

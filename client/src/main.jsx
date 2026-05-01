@@ -61,7 +61,7 @@ const router = createBrowserRouter([
           {
             path: "live-chats",
             element: <LiveChat />,
-            hydrateFallbackElement: <Loader />,
+            // hydrateFallbackElement: <Loader />,
           },
           {
             path: "templates",
